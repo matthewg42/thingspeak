@@ -59,14 +59,10 @@ class Feed < ActiveRecord::Base
   def self.select_options(channel, params)
     only = [:created_at]
     only += [:entry_id] unless timeparam_valid?(params[:timescale]) or timeparam_valid?(params[:average]) or timeparam_valid?(params[:median]) or timeparam_valid?(params[:sum])
-    only += [:field1] unless channel.field1.blank? or (params[:field_id] and !params[:field_id].index('1'))
-    only += [:field2] unless channel.field2.blank? or (params[:field_id] and !params[:field_id].index('2'))
-    only += [:field3] unless channel.field3.blank? or (params[:field_id] and !params[:field_id].index('3'))
-    only += [:field4] unless channel.field4.blank? or (params[:field_id] and !params[:field_id].index('4'))
-    only += [:field5] unless channel.field5.blank? or (params[:field_id] and !params[:field_id].index('5'))
-    only += [:field6] unless channel.field6.blank? or (params[:field_id] and !params[:field_id].index('6'))
-    only += [:field7] unless channel.field7.blank? or (params[:field_id] and !params[:field_id].index('7'))
-    only += [:field8] unless channel.field8.blank? or (params[:field_id] and !params[:field_id].index('8'))
+
+    Channel.columns_with_prefix('field').map {|c| c.name.to_sym}.each do |f| 
+      only += [f] if !channel.send(f).blank?
+    end
 
     # add geolocation data if necessary
     if params[:location] and params[:location].upcase == 'TRUE'
