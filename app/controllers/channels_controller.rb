@@ -347,14 +347,9 @@ class ChannelsController < ApplicationController
 
       # set feed details
       feed.channel_id = channel.id
-      feed.field1 = params[:field1] || params['1'] if params[:field1] || params['1']
-      feed.field2 = params[:field2] || params['2'] if params[:field2] || params['2']
-      feed.field3 = params[:field3] || params['3'] if params[:field3] || params['3']
-      feed.field4 = params[:field4] || params['4'] if params[:field4] || params['4']
-      feed.field5 = params[:field5] || params['5'] if params[:field5] || params['5']
-      feed.field6 = params[:field6] || params['6'] if params[:field6] || params['6']
-      feed.field7 = params[:field7] || params['7'] if params[:field7] || params['7']
-      feed.field8 = params[:field8] || params['8'] if params[:field8] || params['8']
+      Feed.columns_with_prefix('field').each do |col|
+        feed.send(col.name + '=', params[col.name.to_sym] || params[col.name.numeric_suffix.to_s]) if params[col.name.to_sym] || params[col.name.numeric_suffix.to_s]
+      end
       feed.status = params[:status] if params[:status]
       feed.latitude = params[:lat] if params[:lat]
       feed.latitude = params[:latitude] if params[:latitude]
