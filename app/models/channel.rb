@@ -165,14 +165,10 @@ class Channel < ActiveRecord::Base
     only += [:latitude] if self.latitude.present?
     only += [:longitude] if self.longitude.present?
     only += [:elevation] if self.elevation.present?
-    only += [:field1] if self.field1.present?
-    only += [:field2] if self.field2.present?
-    only += [:field3] if self.field3.present?
-    only += [:field4] if self.field4.present?
-    only += [:field5] if self.field5.present?
-    only += [:field6] if self.field6.present?
-    only += [:field7] if self.field7.present?
-    only += [:field8] if self.field8.present?
+
+    Channel.columns_with_prefix('field').map { |c| c.name.to_sym }.each do |f|
+      only += [f] if self.send(f).present?
+    end
 
     # return a hash
     return { :only => only }
