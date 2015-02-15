@@ -283,8 +283,10 @@ class Channel < ActiveRecord::Base
 
   # check if the any of the fields have changed
   def fields_changed?
-    field1_changed? || field2_changed? || field3_changed? || field4_changed? ||
-      field5_changed? || field6_changed? || field7_changed? || field8_changed?
+    Channel.columns_with_prefix('field').each do |c|
+      return true if self.send(c.name + '_changed?')
+    end
+    return false
   end
 
   # update the chart windows
