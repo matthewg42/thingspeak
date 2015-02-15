@@ -99,11 +99,15 @@ class FeedFactory < ApplicationController
   def get_feeds
     # get feeds based on entry ids
     if @options[:start_entry_id].present? || @options[:end_entry_id].present?
-      @feeds = Feed.from("feeds FORCE INDEX (index_feeds_on_channel_id_and_entry_id)")
+      qryfrom = "feeds"
+      qryfrom += " FORCE INDEX (index_feeds_on_channel_id_and_entry_id)" if ActiveRecord::Base.connection.adapter_name == 'MySQL'
+      @feeds = Feed.from(qryfrom)
         .where(:channel_id => @channel.id, :entry_id => entry_id_range)
     # get feed based on conditions
     else
-      @feeds = Feed.from("feeds FORCE INDEX (index_feeds_on_channel_id_and_created_at)")
+      qryfrom = "feeds"
+      qryfrom += " FORCE INDEX (index_feeds_on_channel_id_and_created_at)" if ActiveRecord::Base.connection.adapter_name == 'MySQL'
+      @feeds = Feed.from(qryfrom)
         .where(:channel_id => @channel.id, :created_at => @date_range)
     end
 

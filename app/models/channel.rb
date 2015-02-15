@@ -78,11 +78,11 @@ class Channel < ActiveRecord::Base
 
   validates :video_type, :presence => true, :if => lambda{ |channel| channel.video_id.present? }
 
-  scope :public_viewable, lambda { where("public_flag = true AND social != true") }
-  scope :not_social, lambda { where("social != true") }
-  scope :is_public, lambda { where("public_flag = true") }
+  scope :public_viewable, lambda { where("public_flag = ? AND social != ?", true, true) }
+  scope :not_social, lambda { where("social != ?", true) }
+  scope :is_public, lambda { where("public_flag = ?", true) }
   scope :active, lambda { where("channels.last_entry_id > 1 and channels.updated_at > ?", DateTime.now.utc - 7.day) }
-  scope :being_cleared, lambda { where("clearing = true") }
+  scope :being_cleared, lambda { where("clearing = ?", true) }
   scope :by_array, lambda {|ids| { :conditions => ["id in (?)", ids.uniq] }  }
   scope :with_tag, lambda {|name| joins(:tags).where("tags.name = ?", name) }
 
@@ -267,13 +267,13 @@ class Channel < ActiveRecord::Base
   # private windows
   def private_windows(show_flag = false)
     show_flag = (show_flag.to_s == 'true') ? true : false
-    return self.windows.where("private_flag = true AND show_flag = ?", show_flag)
+    return self.windows.where("private_flag = ? AND show_flag = ?", true, show_flag)
   end
 
   # public windows
   def public_windows(show_flag = false)
     show_flag = (show_flag.to_s == 'true') ? true : false
-    return self.windows.where("private_flag = false AND show_flag = ?", show_flag)
+    return self.windows.where("private_flag = ? AND show_flag = ?", false, show_flag)
   end
 
   # check if the channel is public

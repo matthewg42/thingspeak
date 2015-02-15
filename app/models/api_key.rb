@@ -18,8 +18,8 @@ class ApiKey < ActiveRecord::Base
 
   validates_uniqueness_of :api_key
 
-  scope :write_keys, lambda { where("write_flag = true") }
-  scope :read_keys, lambda { where("write_flag = false") }
+  scope :write_keys, lambda { where("write_flag = ?", true) }
+  scope :read_keys, lambda { where("write_flag = ?", false) }
 
   attr_readonly :created_at
 
