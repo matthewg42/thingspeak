@@ -416,18 +416,12 @@ class ChannelsController < ApplicationController
   end
 
   # upload csv file to channel
-  def upload
-    channel = Channel.find(params[:id])
-    check_permissions(channel)
-
-    # if no data
-    if params[:upload].blank? || params[:upload][:csv].blank?
-      flash[:alert] = t(:upload_no_file)
-      redirect_to channel_path(channel.id, :anchor => "dataimport") and return
-    end
-
+  # return :upload_successful on success, 
+  # :upload_incorrect_format
+  # :upload_no_data
+  def process_csv(channel, csv, tz)
     # set time zone
-    Time.zone = params[:feed][:time_zone]
+    Time.zone = tz
     Chronic.time_class = Time.zone
 
     # make sure uploaded file doesn't cause errors
@@ -435,15 +429,14 @@ class ChannelsController < ApplicationController
     flash_alert = nil
     begin
       # read data from uploaded file
-      csv_array = CSV.parse(params[:upload][:csv].read)
+      csv_array = CSV.parse(csv)
     rescue CSV::MalformedCSVError
-      flash_alert = t(:upload_incorrect_format)
+      return :upload_incorrect_format
     end
 
     # if no data read, output error message
     if csv_array.nil? || csv_array.blank?
-      flash[:alert] = flash_alert || t(:upload_no_data)
-      redirect_to channel_path(channel.id, :anchor => "dataimport") and return
+      return :upload_no_data
     end
 
     # does the column have headers
@@ -551,11 +544,48 @@ class ChannelsController < ApplicationController
       end
     end
 
-    # redirect
-    flash[:notice] = t(:upload_successful)
-    redirect_to channel_path(channel.id, :anchor => "dataimport")
+    return :upload_successful
   end
 
+  def post_csv
+    # use auth key to get channel & check permission
+    puts params.to_s
+    api_key = ApiKey.find_by_api_key(get_apikey)
+
+    # if write permission, allow post
+    if (api_key && api_key.write_flag)
+      channel = api_key.channel
+
+      # check we have file to upload in connection
+      # return 0 if not...
+      render :text => 'Error: no upload[csv] data' and return if params[:upload].blank? || params[:upload][:csv].blank?
+
+      status = process_csv(channel, params[:upload][:csv].read, params[:time_zone] || 'UTC')
+      if status = :upload_successful
+        render :text => 'success'
+      else
+        render :text => 'Error: %s' % status.to_s 
+      end
+    else
+      render :text => 'Error: API KEY invalid' 
+    end
+  end
+
+  def upload
+    channel = Channel.find(params[:id])
+    check_permissions(channel)
+
+    # if no data
+    if params[:upload].blank? || params[:upload][:csv].blank?
+      flash[:alert] = t(:upload_no_file)
+      redirect_to channel_path(channel.id, :anchor => "dataimport") and return
+    end
+
+    # call the CSV importer
+    status = process_csv(channel, params[:upload][:csv].read, params[:feed][:time_zone])
+    flash[:alert] = t(status)
+    redirect_to channel_path(channel.id, :anchor => "dataimport")
+  end
 
   private
 
