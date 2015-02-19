@@ -558,16 +558,16 @@ class ChannelsController < ApplicationController
 
       # check we have file to upload in connection
       # return 0 if not...
-      render :text => 'Error: no upload[csv] data' and return if params[:upload].blank? || params[:upload][:csv].blank?
+      render :text => 'error: no upload[csv] data' and return if params[:upload].blank? || params[:upload][:csv].blank?
 
       status = process_csv(channel, params[:upload][:csv].read, params[:time_zone] || 'UTC')
       if status = :upload_successful
         render :text => 'success'
       else
-        render :text => 'Error: %s' % status.to_s 
+        render :text => 'error: %s' % status.to_s 
       end
     else
-      render :text => 'Error: API KEY invalid' 
+      render :text => 'error: API KEY invalid' 
     end
   end
 
