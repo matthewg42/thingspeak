@@ -6,11 +6,6 @@ Bundler.require(:default, Rails.env)
 
 module Thingspeak
   class Application < Rails::Application
-
-    # rails 4 asset serving in production (else Heroku and the like will append
-    # digests to the asset path and they will result in 404s)
-    config.serve_static_assets = true
-
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{config.root}/lib)

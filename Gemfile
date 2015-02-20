@@ -1,9 +1,8 @@
 source 'http://rubygems.org'
 ruby '2.1.4'
 
-gem 'authlogic'
-gem 'pg'
 gem 'rails', '4.0.5'
+gem 'pg'
 gem 'jquery-rails', '3.0.4'
 gem 'rails_autolink'
 gem 'devise'
@@ -40,6 +39,10 @@ gem 'tzinfo-data'
 gem 'turbolinks'
 gem 'geokit-rails'
 gem 'clockwork'
+gem 'authlogic'
+
+# For Heroku asset serving with Rails 4
+gem 'rails_12factor', group: :production
 
 # to use debugger
 # gem 'ruby-debug'
