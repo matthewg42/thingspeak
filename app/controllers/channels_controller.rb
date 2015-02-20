@@ -561,7 +561,7 @@ class ChannelsController < ApplicationController
       render :text => 'error: no upload[csv] data' and return if params[:upload].blank? || params[:upload][:csv].blank?
 
       status = process_csv(channel, params[:upload][:csv].read, params[:time_zone] || 'UTC')
-      if status = :upload_successful
+      if status == :upload_successful
         render :text => 'success'
       else
         render :text => 'error: %s' % status.to_s 
