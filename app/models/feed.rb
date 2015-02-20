@@ -26,8 +26,8 @@ class Feed < ActiveRecord::Base
   extend FeedHelper
   belongs_to :channel
 
-  after_commit :queue_react
-  delegate :queue_react, :to => :channel
+  #after_commit :queue_react
+  #delegate :queue_react, :to => :channel
 
   self.include_root_in_json = false
 
