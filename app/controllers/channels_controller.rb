@@ -416,9 +416,13 @@ class ChannelsController < ApplicationController
   end
 
   # upload csv file to channel
-  # return :upload_successful on success, 
-  # :upload_incorrect_format
-  # :upload_no_data
+  # returns status, number_of_record_added
+  # status is one of:
+  #   :upload_successful on success, 
+  #   :upload_incorrect_format
+  #   :upload_no_data
+  # number_of_record_added is an integer which is a count of the number
+  # of records which have been added to the feed table by this function call
   def process_csv(channel, csv, tz)
     # set time zone
     Time.zone = tz
@@ -427,16 +431,17 @@ class ChannelsController < ApplicationController
     # make sure uploaded file doesn't cause errors
     csv_array = nil
     flash_alert = nil
+    num_records_at_start = channel.feeds.count
     begin
       # read data from uploaded file
       csv_array = CSV.parse(csv)
     rescue CSV::MalformedCSVError
-      return :upload_incorrect_format
+      return :upload_incorrect_format, 0
     end
 
     # if no data read, output error message
     if csv_array.nil? || csv_array.blank?
-      return :upload_no_data
+      return :upload_no_data, 0
     end
 
     # does the column have headers
@@ -544,7 +549,7 @@ class ChannelsController < ApplicationController
       end
     end
 
-    return :upload_successful
+    return :upload_successful, channel.feeds.count - num_records_at_start
   end
 
   def post_csv
@@ -560,14 +565,11 @@ class ChannelsController < ApplicationController
       # return 0 if not...
       render :text => 'error: no upload[csv] data' and return if params[:upload].blank? || params[:upload][:csv].blank?
 
-      status = process_csv(channel, params[:upload][:csv].read, params[:time_zone] || 'UTC')
-      if status == :upload_successful
-        render :text => 'success'
-      else
-        render :text => 'error: %s' % status.to_s 
-      end
+      status, num_added = process_csv(channel, params[:upload][:csv].read, params[:time_zone] || 'UTC')
+      render :text => num_added
     else
-      render :text => 'error: API KEY invalid' 
+      #render :text => 'error: API KEY invalid' 
+      render :text => 0
     end
   end
 
@@ -582,7 +584,7 @@ class ChannelsController < ApplicationController
     end
 
     # call the CSV importer
-    status = process_csv(channel, params[:upload][:csv].read, params[:feed][:time_zone])
+    status, num_added = process_csv(channel, params[:upload][:csv].read, params[:feed][:time_zone])
     flash[:alert] = t(status)
     redirect_to channel_path(channel.id, :anchor => "dataimport")
   end

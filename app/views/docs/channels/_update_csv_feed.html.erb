@@ -20,7 +20,7 @@ Example POST:
 <pre>
 POST <span class="str"><%= @ssl_api_domain %>update_csv<span class="format format-json">.json</span><span class="format format-xml">.xml</span></span>
      api_key=<span class="customcode"><%= @channel_api_key %></span>
-     update[csv]:<span class="customcode">
+     upload[csv]:<span class="customcode">
 created_at,entry_id,field1,field2,field3,field4,field5,field6
 2015-02-13 07:12:22 +0000,1,43.478,51.752,4.90,5.23,9.23,2.84
 2015-02-13 07:12:52 +0000,2,49.321,54.782,9.63,5.01,7.30,8.63
@@ -32,13 +32,7 @@ created_at,entry_id,field1,field2,field3,field4,field5,field6
 <br>
 
 <div class="format format-block-xl format-text">
-  The response will one of the following: 
-  <ul>
-    <li><code>success</code></li>
-    <li><code>error: no upload[csv] data</code></li>
-    <li><code>error: API KEY invalid</code></li>
-    <li><code>error: ...</code></li>
-  </ul>
+  The response is an integer which is the number of records added to the channel.
   <br><br>
 </div>
 
