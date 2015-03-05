@@ -1,6 +1,8 @@
 source 'http://rubygems.org'
+ruby '2.1.4'
 
 gem 'rails', '4.0.5'
+gem 'pg'
 gem 'jquery-rails', '3.0.4'
 gem 'rails_autolink'
 gem 'devise'
@@ -37,6 +39,10 @@ gem 'tzinfo-data'
 gem 'turbolinks'
 gem 'geokit-rails'
 gem 'clockwork'
+gem 'authlogic'
+
+# For Heroku asset serving with Rails 4
+gem 'rails_12factor', group: :production
 
 # to use debugger
 # gem 'ruby-debug'
@@ -45,14 +51,6 @@ gem 'clockwork'
 gem "sass-rails", "4.0.2"
 gem 'coffee-rails', " ~> 4.0"
 gem 'uglifier'
-
-group :development, :test do
-  gem 'sqlite3'
-  gem 'sqlite3-ruby', '1.3.3', :require => 'sqlite3'
-end
-group :production do
-  gem 'mysql'
-end
 
 group :development do
   gem 'annotate', '~> 2.6.1'

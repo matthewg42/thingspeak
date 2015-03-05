@@ -1,0 +1,46 @@
+<div>
+  <%= render 'response' %>
+  <h2 id="update_csv_feed">Update Channel Feed with CSV records</h2>
+</div>
+
+<br>
+To update multiple record in a Channel feed, send an HTTP POST to<br>
+<code><%= @ssl_api_domain %>update_csv<span class="format format-json">.json</span><span class="format format-xml">.xml</span></code> .
+
+<br><br>
+Valid parameters:
+<ul>
+  <li><b>api_key</b> (string) - Write API Key for this specific Channel (required).  The Write API Key can optionally be sent via a <%= HTTP_HEADER_API_KEY_NAME %> HTTP header.</li>
+  <li><b>update[csv]</b> (string) - CSV data</li>
+</ul>
+
+<br>
+Example POST:
+
+<pre>
+POST <span class="str"><%= @ssl_api_domain %>update_csv<span class="format format-json">.json</span><span class="format format-xml">.xml</span></span>
+     api_key=<span class="customcode"><%= @channel_api_key %></span>
+     upload[csv]:<span class="customcode">
+created_at,entry_id,field1,field2,field3,field4,field5,field6
+2015-02-13 07:12:22 +0000,1,43.478,51.752,4.90,5.23,9.23,2.84
+2015-02-13 07:12:52 +0000,2,49.321,54.782,9.63,5.01,7.30,8.63
+2015-02-13 07:13:22 +0000,3,51.023,42.647,7.57,6.89,8.24,0.52
+2015-02-13 07:13:52 +0000,4,54.194,59.884,7.68,9.67,5.35,6.02
+</span>
+</pre>
+
+<br>
+
+<div class="format format-block-xl format-text">
+  The response is an integer which is the number of records added to the channel.
+  <br><br>
+</div>
+
+<div class="format format-block-xxl format-json">
+[None]
+</div>
+
+<div class="format format-block-xxl format-xml">
+[None]
+</div>
+

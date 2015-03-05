@@ -8,6 +8,10 @@ Thingspeak::Application.routes.draw do
   match 'update', :to => 'channels#post_data', :via => ((GET_SUPPORT) ? [:get, :post] : :post)
   match 's/update', :to => 'channels#post_data', :via => [:get, :post]
 
+  # bulk upload
+  match 'update_csv', :to => 'channels#post_csv', :via => ((GET_SUPPORT) ? [:get, :post] : :post)
+  match 's/update_csv', :to => 'channels#post_csv', :via => [:get, :post]
+
   # handle subdomain routes
   get '/', :to => 'subdomains#index', :constraints => { :subdomain => 'api' }
   get 'crossdomain', :to => 'subdomains#crossdomain', :constraints => { :subdomain => 'api' }

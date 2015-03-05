@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20141024161555) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
     t.text     "body"
@@ -143,7 +146,7 @@ ActiveRecord::Schema.define(version: 20141024161555) do
     t.date    "date"
     t.string  "calculation", limit: 20
     t.string  "result"
-    t.integer "field",       limit: 1
+    t.integer "field",       limit: 2
   end
 
   add_index "daily_feeds", ["channel_id", "date"], name: "index_daily_feeds_on_channel_id_and_date", using: :btree
@@ -326,9 +329,9 @@ ActiveRecord::Schema.define(version: 20141024161555) do
     t.integer  "schedulable_id"
     t.string   "schedulable_type",     limit: 50
     t.string   "frequency",            limit: 20
-    t.integer  "day",                  limit: 1
-    t.integer  "hour",                 limit: 1
-    t.integer  "minute",               limit: 1
+    t.integer  "day",                  limit: 2
+    t.integer  "hour",                 limit: 2
+    t.integer  "minute",               limit: 2
     t.integer  "parent_id"
     t.datetime "last_event_at"
     t.text     "last_response"
