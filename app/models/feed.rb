@@ -60,7 +60,7 @@ class Feed < ActiveRecord::Base
     only = [:created_at]
     only += [:entry_id] unless timeparam_valid?(params[:timescale]) or timeparam_valid?(params[:average]) or timeparam_valid?(params[:median]) or timeparam_valid?(params[:sum])
 
-    Channel.columns_with_prefix('field').map {|c| c.name.to_sym}.each do |f| 
+    Channel.column_names_with_prefix('field').map {|c| c.to_sym}.each do |f| 
       only += [f] if !channel.send(f).blank?
     end
 

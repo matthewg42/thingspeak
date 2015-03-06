@@ -166,7 +166,7 @@ class Channel < ActiveRecord::Base
     only += [:longitude] if self.longitude.present?
     only += [:elevation] if self.elevation.present?
 
-    Channel.columns_with_prefix('field').map { |c| c.name.to_sym }.each do |f|
+    Channel.column_names_with_prefix('field').map { |c| c.to_sym }.each do |f|
       only += [f] if self.send(f).present?
     end
 
@@ -283,8 +283,8 @@ class Channel < ActiveRecord::Base
 
   # check if the any of the fields have changed
   def fields_changed?
-    Channel.columns_with_prefix('field').each do |c|
-      return true if self.send(c.name + '_changed?')
+    Channel.column_names_with_prefix('field').each do |c|
+      return true if self.send(c + '_changed?')
     end
     return false
   end
