@@ -12,14 +12,9 @@ Valid parameters:
   <li><b>api_key</b> (string) - User's API Key; please note that this is different than a Channel API key, and can be found in <a href="/account">your account details</a>. (required).</li>
   <li><b>description</b> (string) - Description of the Channel (optional)</li>
   <li><b>elevation</b> (integer) - Elevation in meters (optional)</li>
-  <li><b>field1</b> (string) - Field1 name (optional)</li>
-  <li><b>field2</b> (string) - Field2 name (optional)</li>
-  <li><b>field3</b> (string) - Field3 name (optional)</li>
-  <li><b>field4</b> (string) - Field4 name (optional)</li>
-  <li><b>field5</b> (string) - Field5 name (optional)</li>
-  <li><b>field6</b> (string) - Field6 name (optional)</li>
-  <li><b>field7</b> (string) - Field7 name (optional)</li>
-  <li><b>field8</b> (string) - Field8 name (optional)</li>
+  <% Channel.column_names_with_prefix('field').each do |field_name| %>
+  <li><b><%= field_name %></b> (string) - <%= field_name.capitalize %> name (optional)</li>
+  <% end %>
   <li><b>latitude</b> (decimal) - Latitude in degrees (optional)</li>
   <li><b>longitude</b> (decimal) - Longitude in degrees (optional)</li>
   <li><b>metadata</b> (text) - Metadata for the Channel, which can include JSON, XML, or any other data (optional)</li>

@@ -11,14 +11,9 @@ To update a Channel feed, send an HTTP GET or POST to<br>
 Valid parameters:
 <ul>
   <li><b>api_key</b> (string) - Write API Key for this specific Channel (required).  The Write API Key can optionally be sent via a <%= HTTP_HEADER_API_KEY_NAME %> HTTP header.</li>
-  <li><b>field1</b> (string) - Field 1 data (optional)</li>
-  <li><b>field2</b> (string) - Field 2 data (optional)</li>
-  <li><b>field3</b> (string) - Field 3 data (optional)</li>
-  <li><b>field4</b> (string) - Field 4 data (optional)</li>
-  <li><b>field5</b> (string) - Field 5 data (optional)</li>
-  <li><b>field6</b> (string) - Field 6 data (optional)</li>
-  <li><b>field7</b> (string) - Field 7 data (optional)</li>
-  <li><b>field8</b> (string) - Field 8 data (optional)</li>
+  <% Channel.column_names_with_prefix('field').each do |field_name| %>
+  <li><b><%= field_name %></b> (string) - Field <%= field_name.numeric_suffix %> data (optional)</li>
+  <% end %>
   <li><b>lat</b> (decimal) - Latitude in degrees (optional)</li>
   <li><b>long</b> (decimal) - Longitude in degrees (optional)</li>
   <li><b>elevation</b> (integer) - Elevation in meters (optional)</li>
@@ -51,14 +46,9 @@ POST <span class="str"><%= @ssl_api_domain %>update<span class="format format-js
 <pre class="prettyprint">
 {
   "channel_id": 3,
-  "field1": "73",
-  "field2": null,
-  "field3": null,
-  "field4": null,
-  "field5": null,
-  "field6": null,
-  "field7": null,
-  "field8": null,
+  <% Channel.column_names_with_prefix('field').each do |field_name| %>
+  <%= raw("\"#{field_name}\": " + ('field1' == field_name && '"73",' || 'null,') ) %>
+  <% end %>
   "created_at": "2014-02-25T14:13:01-05:00",
   "entry_id": 320,
   "status": null,
