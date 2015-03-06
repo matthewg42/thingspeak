@@ -24,7 +24,7 @@
     </ul>
     <br><br>
     <h4>Channels API</h4>
-    To read and write to a ThingSpeak Channel, your application must make requests to the ThingSpeak API using HTTP requests. Each ThingSpeak Channel allows for 8 fields of data (both numeric and alphanumeric formats), location information, and a status update. Each entry is stored with a date and time stamp and is assigned a unique Entry ID (entry_id). After the data is stored, you can retrieve the data by time selection or by Entry ID. In addition to storing and retrieving numeric and alphanumeric data, the ThingSpeak API allows for numeric data processing such as timescaling, averaging, median, summing, and rounding. The channel feeds supports JSON, XML, and CSV formats for integration into applications.
+    To read and write to a ThingSpeak Channel, your application must make requests to the ThingSpeak API using HTTP requests. Each ThingSpeak Channel allows for <%= Channel.columns_with_prefix('field').count %> fields of data (both numeric and alphanumeric formats), location information, and a status update. Each entry is stored with a date and time stamp and is assigned a unique Entry ID (entry_id). After the data is stored, you can retrieve the data by time selection or by Entry ID. In addition to storing and retrieving numeric and alphanumeric data, the ThingSpeak API allows for numeric data processing such as timescaling, averaging, median, summing, and rounding. The channel feeds supports JSON, XML, and CSV formats for integration into applications.
     <br><br>
 
     <hr />

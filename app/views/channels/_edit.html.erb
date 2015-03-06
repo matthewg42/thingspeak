@@ -95,7 +95,7 @@
       <br><br>
       <%= t(:help_channel_video) %>
       <br><br>
-      <%= t(:help_channel_fields) %>
+      <%= t(:help_channel_fields).sub('FIELDCOUNT', Channel.columns_with_prefix('field').count.to_s) %>
       <br><br>
       <%= t(:help_channel_clear) %>
       <br><br>
