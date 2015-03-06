@@ -532,7 +532,7 @@ class ChannelsController < ApplicationController
 
     # call the CSV importer
     status, num_added = process_csv(channel, params[:upload][:csv].read, params[:feed][:time_zone])
-    flash[:alert] = t(status)
+    flash[:alert] = t(status) + " (#{num_added} records imported)"
     redirect_to channel_path(channel.id, :anchor => "dataimport")
   end
 
