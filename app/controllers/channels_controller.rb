@@ -424,7 +424,7 @@ class ChannelsController < ApplicationController
     Chronic.time_class = Time.zone
 
     # Columns and their default indexes
-    mng_columns = 'created_at entry_id latitude longitude elevation location status'.split + Feed.columns_with_prefix('field').map {|c| c.name}
+    column_names = 'created_at entry_id latitude longitude elevation location status'.split + Feed.columns_with_prefix('field').map {|c| c.name}
 
     # make sure uploaded file doesn't cause errors
     csv_array = nil
@@ -446,21 +446,20 @@ class ChannelsController < ApplicationController
     headers = has_headers?(csv_array)
 
     if headers
-      mng_columns = csv_array[0]
+      column_names = csv_array[0]
       csv_array.delete_at(0)
     end
 
     # construct hashes so we can lookup idx -> column and column -> idx
-    mng_field2idx = mng_columns.map.with_index { |x, i| [x.downcase, i] }.to_h
-    mng_idx2field = mng_columns.map.with_index { |x, i| [i, x.downcase] }.to_h
+    field_name_to_index = column_names.map.with_index { |x, i| [x.downcase, i] }.to_h
 
     # determine if the date can be parsed
-    parse_date = date_parsable?(csv_array[0][mng_field2idx['created_at']]) unless csv_array[0].nil? || csv_array[0][mng_field2idx['created_at']].nil?
+    parse_date = date_parsable?(csv_array[0][field_name_to_index['created_at']]) unless csv_array[0].nil? || csv_array[0][field_name_to_index['created_at']].nil?
 
     # if 2 or more rows
     if !csv_array[1].blank?
-      date1 = Chronic.parse(csv_array[0][mng_field2idx['created_at']]) if parse_date
-      date2 = Chronic.parse(csv_array[1][mng_field2idx['created_at']]) if parse_date
+      date1 = Chronic.parse(csv_array[0][field_name_to_index['created_at']]) if parse_date
+      date2 = Chronic.parse(csv_array[1][field_name_to_index['created_at']]) if parse_date
 
       # reverse the array if the dates exist and 1st date is larger than 2nd date
       csv_array = csv_array.reverse if date1.present? && date2.present? && date1 > date2
@@ -474,8 +473,8 @@ class ChannelsController < ApplicationController
         data = Hash.new
 
         # all columns except entry_id and created_at can be copied to the new feed record
-        (mng_columns - ['created_at', 'entry_id']).each do |field_name|
-          data[field_name] = row[mng_field2idx[field_name]]
+        (column_names - ['created_at', 'entry_id']).each do |field_name|
+          data[field_name] = row[field_name_to_index[field_name]]
         end
 
         # add other_columns
@@ -488,7 +487,7 @@ class ChannelsController < ApplicationController
 
         # set feed data
         feed.channel_id = channel.id
-        feed.created_at = Chronic.parse(row[mng_field2idx['created_at']]) if parse_date
+        feed.created_at = Chronic.parse(row[field_name_to_index['created_at']]) if parse_date
 
         # save channel and feed
         feed.save
