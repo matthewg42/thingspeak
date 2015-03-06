@@ -62,38 +62,12 @@
       <span class="small"><%= t(:vimeo) %></span>
         </td>
       </tr>
+      <% Channel.column_names_with_prefix('field').each do |field_name| %>
       <tr>
-        <td class="left"><%= t(:field) %> 1</td>
-        <td><%= c.text_field :field1, :class => 'field' %></td>
+        <td class="left"><%= t(:field) %> <%= field_name.numeric_suffix %></td>
+        <td><%= c.text_field field_name.to_sym, :class => 'field' %></td>
       </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 2</td>
-        <td><%= c.text_field :field2, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 3</td>
-        <td><%= c.text_field :field3, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 4</td>
-        <td><%= c.text_field :field4, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 5</td>
-        <td><%= c.text_field :field5, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 6</td>
-        <td><%= c.text_field :field6, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 7</td>
-        <td><%= c.text_field :field7, :class => 'field' %></td>
-      </tr>
-      <tr>
-        <td class="left"><%= t(:field) %> 8</td>
-        <td><%= c.text_field :field8, :class => 'field' %></td>
-      </tr>
+      <% end %>
       <tr>
         <td class="left"></td>
         <td><%= c.submit t(:save_model, model: 'Channel'), class: 'btn btn-primary' %></td>
