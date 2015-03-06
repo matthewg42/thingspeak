@@ -65,25 +65,20 @@ POST <span class="str"><%= @ssl_api_domain %>update<span class="format format-js
   The response will be an XML object of the new feed, for example:
 
 <pre class="prettyprint">
-&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;feed>
-  &lt;channel-id type="integer">3&lt;/channel-id>
-  &lt;field1>73&lt;/field1>
-  &lt;field2 nil="true"/>
-  &lt;field3 nil="true"/>
-  &lt;field4 nil="true"/>
-  &lt;field5 nil="true"/>
-  &lt;field6 nil="true"/>
-  &lt;field7 nil="true"/>
-  &lt;field8 nil="true"/>
-  &lt;created-at type="dateTime">2014-02-25T14:15:42-05:00&lt;/created-at>
-  &lt;entry-id type="integer">321&lt;/entry-id>
-  &lt;status nil="true"/>
-  &lt;latitude type="decimal" nil="true"/>
-  &lt;longitude type="decimal" nil="true"/>
-  &lt;elevation nil="true"/>
-  &lt;location nil="true"/>
-&lt;/feed>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;feed&gt;
+  &lt;channel-id type="integer"&gt;3&lt;/channel-id&gt;
+  <% Channel.column_names_with_prefix('field').each do |field_name| %>
+  <%= 'field1' == field_name && "<field1>73</field1>" || "<#{field_name} nil=\"true\"/>" %>
+  <% end %>
+  &lt;created-at type="dateTime"&gt;2014-02-25T14:15:42-05:00&lt;/created-at&gt;
+  &lt;entry-id type="integer"&gt;321&lt;/entry-id&gt;
+  &lt;status nil="true"/&gt;
+  &lt;latitude type="decimal" nil="true"/&gt;
+  &lt;longitude type="decimal" nil="true"/&gt;
+  &lt;elevation nil="true"/&gt;
+  &lt;location nil="true"/&gt;
+&lt;/feed&gt;
 </pre>
 
 </div>
