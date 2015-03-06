@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024161555) do
+ActiveRecord::Schema.define(version: 20150306052833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,6 +108,14 @@ ActiveRecord::Schema.define(version: 20141024161555) do
     t.string   "user_agent"
     t.string   "realtime_io_serial_number", limit: 36
     t.text     "metadata"
+    t.string   "field9"
+    t.string   "field10"
+    t.string   "field11"
+    t.string   "field12"
+    t.string   "field13"
+    t.string   "field14"
+    t.string   "field15"
+    t.string   "field16"
   end
 
   add_index "channels", ["latitude", "longitude"], name: "index_channels_on_latitude_and_longitude", using: :btree
@@ -204,6 +212,14 @@ ActiveRecord::Schema.define(version: 20141024161555) do
     t.decimal  "longitude",  precision: 15, scale: 10
     t.string   "elevation"
     t.string   "location"
+    t.string   "field9"
+    t.string   "field10"
+    t.string   "field11"
+    t.string   "field12"
+    t.string   "field13"
+    t.string   "field14"
+    t.string   "field15"
+    t.string   "field16"
   end
 
   add_index "feeds", ["channel_id", "created_at"], name: "index_feeds_on_channel_id_and_created_at", using: :btree

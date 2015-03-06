@@ -108,9 +108,9 @@ class WindowsController < ApplicationController
     channel = Channel.find(params[:channel_id])
 
     if @visibility == "private"
-      @windows = channel.private_windows(false) unless channel.nil?
+      @windows = channel.private_windows(false).sort unless channel.nil?
     else
-      @windows = channel.public_windows(false) unless channel.nil?
+      @windows = channel.public_windows(false).sort unless channel.nil?
     end
     @windows.reject! { |window| window.window_type == "plugin" }
     @windows.each do |window|

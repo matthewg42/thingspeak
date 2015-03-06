@@ -125,7 +125,7 @@
   // adds a field
   function addField(id) {
     $('#span_'+id).remove()
-    $('#'+id).val(default_label + ' ' + id.substring(id.length-1));
+    $('#'+id).val(default_label + ' ' + id.substring('channel_field'.length));
     $('#'+id).after('<span class="small" id="span_' + id + '"><input type="checkbox" onclick="removeField(\'' + id + '\')"  /><span class="up2">remove field</span></span>');
     $('#'+id).select();
   }

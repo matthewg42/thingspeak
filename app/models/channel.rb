@@ -519,7 +519,7 @@ class Channel < ActiveRecord::Base
 
     # set the chart window; field_name should be a string like 'field4'
     def update_chart_window(field_name, private_flag)
-      field_number = field_name.last.to_i
+      field_number = field_name.numeric_suffix
 
       # get the chart window
       window = self.windows.where(window_type: 'chart', content_id: field_number, private_flag: private_flag).first
