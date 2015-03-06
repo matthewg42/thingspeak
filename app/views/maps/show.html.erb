@@ -13,7 +13,7 @@
       };
       var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
       var bounds = new google.maps.LatLngBounds();
-      var lat, lng, latlng, marker, title, field1, field2, field3, field4, field5, field6, field7, field8;
+      var lat, lng, latlng, marker, title, <%= Channel.column_names_with_prefix('field').join(', ') %>;
 
       // get the data with a webservice call
       $.getJSON('<%= "#{@domain}channels/#{params[:channel_id]}/feed.json?callback=?&location=true&offset=0#{@qs}" %>', function(data) {
@@ -23,14 +23,9 @@
         }
 
         // set channel field names
-        if (data.channel.field1) { field1 = data.channel.field1; }
-        if (data.channel.field2) { field2 = data.channel.field2; }
-        if (data.channel.field3) { field3 = data.channel.field3; }
-        if (data.channel.field4) { field4 = data.channel.field4; }
-        if (data.channel.field5) { field5 = data.channel.field5; }
-        if (data.channel.field6) { field6 = data.channel.field6; }
-        if (data.channel.field7) { field7 = data.channel.field7; }
-        if (data.channel.field8) { field8 = data.channel.field8; }
+        <% Channel.column_names_with_prefix('field').each do |field_name| %>
+        <%= raw("if (data.channel.#{field_name}) { #{field_name} = data.channel.#{field_name}; }") %>
+        <% end %>
 
         // iterate through each feed
         $.each(data.feeds, function() {
@@ -41,14 +36,9 @@
           if (lat && lng) {
             latlng = new google.maps.LatLng(lat, lng);
             title = '';
-            if (this.field1) { title += field1 + ': ' + this.field1 + '\n'; }
-            if (this.field2) { title += field2 + ': ' + this.field2 + '\n'; }
-            if (this.field3) { title += field3 + ': ' + this.field3 + '\n'; }
-            if (this.field4) { title += field4 + ': ' + this.field4 + '\n'; }
-            if (this.field5) { title += field5 + ': ' + this.field5 + '\n'; }
-            if (this.field6) { title += field6 + ': ' + this.field6 + '\n'; }
-            if (this.field7) { title += field7 + ': ' + this.field7 + '\n'; }
-            if (this.field8) { title += field8 + ': ' + this.field8 + '\n'; }
+            <% Channel.column_names_with_prefix('field').each do |field_name| %>
+            <%= raw("if (this.#{field_name}) { title += #{field_name} + ': ' + this.#{field_name} + '\\n'; }") %>
+            <% end %>
             if (this.status) { title += this.status; }
             marker = new google.maps.Marker({
                 position: latlng,
@@ -88,14 +78,9 @@
               if (lat && lng) {
                 latlng = new google.maps.LatLng(lat, lng);
                 title = '';
-                if (data.field1) { title += field1 + ': ' + data.field1 + '\n'; }
-                if (data.field2) { title += field2 + ': ' + data.field2 + '\n'; }
-                if (data.field3) { title += field3 + ': ' + data.field3 + '\n'; }
-                if (data.field4) { title += field4 + ': ' + data.field4 + '\n'; }
-                if (data.field5) { title += field5 + ': ' + data.field5 + '\n'; }
-                if (data.field6) { title += field6 + ': ' + data.field6 + '\n'; }
-                if (data.field7) { title += field7 + ': ' + data.field7 + '\n'; }
-                if (data.field8) { title += field8 + ': ' + data.field8 + '\n'; }
+                <% Channel.column_names_with_prefix('field').each do |field_name| %>
+                <%= raw("if (data.#{field_name}) { title += #{field_name} + ': ' + data.#{field_name} + '\\n'; }") %>
+                <% end %>
                 if (data.status) { title += data.status; }
                 marker = new google.maps.Marker({
                     position: latlng,
