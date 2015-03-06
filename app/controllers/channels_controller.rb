@@ -423,6 +423,9 @@ class ChannelsController < ApplicationController
     Time.zone = tz
     Chronic.time_class = Time.zone
 
+    # Columns and their default indexes
+    mng_columns = 'created_at entry_id latitude longitude elevation location status'.split + Feed.columns_with_prefix('field').map {|c| c.name}
+
     # make sure uploaded file doesn't cause errors
     csv_array = nil
     flash_alert = nil
@@ -442,50 +445,22 @@ class ChannelsController < ApplicationController
     # does the column have headers
     headers = has_headers?(csv_array)
 
-    # remember the column positions
-    entry_id_column = -1
-    latitude_column = -1
-    longitude_column = -1
-    elevation_column = -1
-    location_column = -1
-    status_column = -1
-    field1_column = -1
-    field2_column = -1
-    field3_column = -1
-    field4_column = -1
-    field5_column = -1
-    field6_column = -1
-    field7_column = -1
-    field8_column = -1
     if headers
-      csv_array[0].each_with_index do |column, index|
-        entry_id_column = index if column.downcase == 'entry_id'
-        latitude_column = index if column.downcase == 'latitude'
-        longitude_column = index if column.downcase == 'longitude'
-        elevation_column = index if column.downcase == 'elevation'
-        location_column = index if column.downcase == 'location'
-        status_column = index if column.downcase == 'status'
-        field1_column = index if column.downcase == 'field1'
-        field2_column = index if column.downcase == 'field2'
-        field3_column = index if column.downcase == 'field3'
-        field4_column = index if column.downcase == 'field4'
-        field5_column = index if column.downcase == 'field5'
-        field6_column = index if column.downcase == 'field6'
-        field7_column = index if column.downcase == 'field7'
-        field8_column = index if column.downcase == 'field8'
-      end
+      mng_columns = csv_array[0]
+      csv_array.delete_at(0)
     end
 
-    # delete the first row if it contains headers
-    csv_array.delete_at(0) if headers
+    # construct hashes so we can lookup idx -> column and column -> idx
+    mng_field2idx = mng_columns.map.with_index { |x, i| [x.downcase, i] }.to_h
+    mng_idx2field = mng_columns.map.with_index { |x, i| [i, x.downcase] }.to_h
 
     # determine if the date can be parsed
-    parse_date = date_parsable?(csv_array[0][0]) unless csv_array[0].nil? || csv_array[0][0].nil?
+    parse_date = date_parsable?(csv_array[0][mng_field2idx['created_at']]) unless csv_array[0].nil? || csv_array[0][mng_field2idx['created_at']].nil?
 
     # if 2 or more rows
     if !csv_array[1].blank?
-      date1 = Chronic.parse(csv_array[0][0]) if parse_date
-      date2 = Chronic.parse(csv_array[1][0]) if parse_date
+      date1 = Chronic.parse(csv_array[0][mng_field2idx['created_at']]) if parse_date
+      date2 = Chronic.parse(csv_array[1][mng_field2idx['created_at']]) if parse_date
 
       # reverse the array if the dates exist and 1st date is larger than 2nd date
       csv_array = csv_array.reverse if date1.present? && date2.present? && date1 > date2
@@ -495,28 +470,16 @@ class ChannelsController < ApplicationController
     csv_array.each do |row|
       # if row isn't blank
       if !row.blank?
-        feed = Feed.new
+        # a has we will used to initialize a new feed record
+        data = Hash.new
 
-        # add the fields if they are from named columns, using reverse order
-        feed.field8 = row.delete_at(field8_column) if field8_column != -1
-        feed.field7 = row.delete_at(field7_column) if field7_column != -1
-        feed.field6 = row.delete_at(field6_column) if field6_column != -1
-        feed.field5 = row.delete_at(field5_column) if field5_column != -1
-        feed.field4 = row.delete_at(field4_column) if field4_column != -1
-        feed.field3 = row.delete_at(field3_column) if field3_column != -1
-        feed.field2 = row.delete_at(field2_column) if field2_column != -1
-        feed.field1 = row.delete_at(field1_column) if field1_column != -1
+        # all columns except entry_id and created_at can be copied to the new feed record
+        (mng_columns - ['created_at', 'entry_id']).each do |field_name|
+          data[field_name] = row[mng_field2idx[field_name]]
+        end
 
-        # set location and status then delete the rows
-        # these 5 deletes must be performed in the proper (reverse) order
-        feed.status = row.delete_at(status_column) if status_column > 0
-        feed.location = row.delete_at(location_column) if location_column > 0
-        feed.elevation = row.delete_at(elevation_column) if elevation_column > 0
-        feed.longitude = row.delete_at(longitude_column) if longitude_column > 0
-        feed.latitude = row.delete_at(latitude_column) if latitude_column > 0
-
-        # remove entry_id column if necessary
-        row.delete_at(entry_id_column) if entry_id_column > 0
+        # add other_columns
+        feed = Feed.new(data)
 
         # update entry_id for channel and feed
         entry_id = channel.last_entry_id.nil? ? 1 : channel.last_entry_id + 1
@@ -525,17 +488,7 @@ class ChannelsController < ApplicationController
 
         # set feed data
         feed.channel_id = channel.id
-        feed.created_at = Chronic.parse(row[0]) if parse_date
-
-        # add the fields normally if necessary
-        feed.field1 = row[1] if feed.field1.blank?
-        feed.field2 = row[2] if feed.field2.blank?
-        feed.field3 = row[3] if feed.field3.blank?
-        feed.field4 = row[4] if feed.field4.blank?
-        feed.field5 = row[5] if feed.field5.blank?
-        feed.field6 = row[6] if feed.field6.blank?
-        feed.field7 = row[7] if feed.field7.blank?
-        feed.field8 = row[8] if feed.field8.blank?
+        feed.created_at = Chronic.parse(row[mng_field2idx['created_at']]) if parse_date
 
         # save channel and feed
         feed.save
