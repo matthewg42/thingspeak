@@ -83,6 +83,7 @@ class PluginsController < ApplicationController
     case params[:template]
     when 'gauge' then template = 'gauge'
     when 'chart' then template = 'chart'
+    when 'flotplot' then template = 'flotplot'
     end
 
     # set template dynamically
