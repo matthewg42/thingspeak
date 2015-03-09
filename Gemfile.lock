@@ -323,6 +323,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    sqlite3 (1.3.10)
     term-ansicolor (1.3.0)
       tins (~> 1.0)
     terminal-table (1.4.5)
@@ -423,6 +424,7 @@ DEPENDENCIES
   sass-rails (= 4.0.2)
   simplificator-rwebthumb!
   spork
+  sqlite3
   therubyracer
   turbolinks
   tweetstream

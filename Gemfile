@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 ruby '2.1.4'
 
 gem 'rails', '4.0.5'
-gem 'pg'
 gem 'jquery-rails', '3.0.4'
 gem 'rails_autolink'
 gem 'devise'
@@ -41,17 +40,23 @@ gem 'geokit-rails'
 gem 'clockwork'
 gem 'authlogic'
 
-# For Heroku asset serving with Rails 4
-gem 'rails_12factor', group: :production
+# Environment specific database gems
+group :development, :test do
+  gem 'sqlite3'
+end
+group :production do
+  gem 'pg'
+end
 
 # to use debugger
-# gem 'ruby-debug'
+#gem 'ruby-debug'
 
 # assets
 gem "sass-rails", "4.0.2"
 gem 'coffee-rails', " ~> 4.0"
 gem 'uglifier'
 
+# Environment specific gems
 group :development do
   gem 'annotate', '~> 2.6.1'
   gem 'quiet_assets'
@@ -70,5 +75,10 @@ group :test do
   gem 'autotest-rails'
   gem 'ZenTest'
   gem 'database_cleaner', '~> 1.2.0'
+end
+
+group :production do
+  # For Heroku asset serving with Rails 4
+  gem 'rails_12factor'
 end
 
